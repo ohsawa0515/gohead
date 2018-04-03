@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"os"
 )
@@ -20,9 +19,8 @@ func main() {
 	}
 	defer f.Close()
 
-	w, err := head(f, n)
-	if err != nil {
+	output := os.Stdout
+	if err := Head(f, n, output); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Fprint(os.Stdout, w)
 }

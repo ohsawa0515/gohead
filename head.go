@@ -3,19 +3,21 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io"
 )
 
-func head(file io.Reader, n int, w io.Writer) (io.Writer, error) {
+func Head(file io.Reader, n int, w io.Writer) error {
 	buf := new(bytes.Buffer)
 	reader := bufio.NewReader(file)
 	for i := 0; i < n; i++ {
 		line, err := reader.ReadBytes('\n')
 		if err != nil && err != io.EOF {
-			return nil, err
+			return err
 		}
 		buf.Write(line)
 	}
 
-	return buf, nil
+	fmt.Fprint(w, buf)
+	return nil
 }
