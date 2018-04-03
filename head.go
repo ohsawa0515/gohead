@@ -7,6 +7,7 @@ import (
 	"io"
 )
 
+// Head display first line of a file
 func Head(file io.Reader, n int, w io.Writer) error {
 	buf := new(bytes.Buffer)
 	reader := bufio.NewReader(file)
