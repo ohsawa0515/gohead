@@ -1,10 +1,8 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
-	"io"
 	"log"
 	"os"
 )
@@ -22,12 +20,9 @@ func main() {
 	}
 	defer f.Close()
 
-	reader := bufio.NewReader(f)
-	for i := 0; i < n; i++ {
-		line, err := reader.ReadBytes('\n')
-		if err != nil && err != io.EOF {
-			break
-		}
-		fmt.Print(string(line))
+	w, err := head(f, n)
+	if err != nil {
+		log.Fatal(err)
 	}
+	fmt.Fprint(os.Stdout, w)
 }
