@@ -2,15 +2,19 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"io"
 	"log"
 	"os"
 )
 
+var n int
+
 func main() {
-	n := 10
-	file := "hoge.txt" // temp
+	flag.IntVar(&n, "n", 10, "count")
+	flag.Parse()
+	file := flag.Args()[0]
 
 	f, err := os.OpenFile(file, os.O_RDONLY, 0)
 	if err != nil {
