@@ -8,7 +8,7 @@ import (
 func TestHead(t *testing.T) {
 	cases := []struct {
 		file   string
-		n      int
+		n      uint64
 		actual string
 	}{
 		{file: "A\nB\nC\nD\nF\n", n: 2, actual: "A\nB\n"},

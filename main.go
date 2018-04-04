@@ -7,10 +7,10 @@ import (
 	"os"
 )
 
-var n int
+var n uint64
 
 func main() {
-	flag.IntVar(&n, "n", 10, "count")
+	flag.Uint64Var(&n, "n", 10, "lines")
 	flag.Parse()
 	files := flag.Args()
 	output := os.Stdout
