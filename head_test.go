@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"testing"
 )
 
@@ -40,7 +39,7 @@ func TestHeadCharacter(t *testing.T) {
 		{file: "A\nBBB\nC\nD\nF\n", c: 10, actual: "A\nBBB\nC\nD\n"},
 		{file: "A\nBBB\nCCCC\nDDDDD\nFFFFFF\n", c: 200, actual: "A\nBBB\nCCCC\nDDDDD\nFFFFFF\n"},
 		{file: "あいうえお\n一二三四五\n", c: 6, actual: "あい"},
-		{file: "あいうえお\n一二三四五\n", c: 22, actual: "あいうえお\n一"},
+		{file: "あいうえお\n一二三四五\n", c: 22, actual: "あいうえお\n一二"},
 	}
 
 	for _, c := range cases {
@@ -52,7 +51,6 @@ func TestHeadCharacter(t *testing.T) {
 
 		expected := buf.Bytes()
 		actual := []byte(c.actual)
-		fmt.Println(bytes.Compare(expected, actual))
 		if bytes.Compare(expected, actual) != 0 {
 			t.Errorf("not matched; actual %v, expected %v", string(actual), string(expected))
 		}
