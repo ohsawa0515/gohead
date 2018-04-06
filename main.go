@@ -8,9 +8,11 @@ import (
 )
 
 var n uint64
+var c uint64
 
 func main() {
 	flag.Uint64Var(&n, "n", 10, "lines")
+	flag.Uint64Var(&c, "c", 0, "bytes")
 	flag.Parse()
 	files := flag.Args()
 	output := os.Stdout
@@ -25,8 +27,16 @@ func main() {
 		if len(files) > 1 {
 			fmt.Fprintf(output, "==> %s <==\n", file)
 		}
-		if err := Head(f, n, output); err != nil {
+		// c オプションが指定された場合は N bytesまで表示する
+		if err := HeadCharacter(f, c, output); err != nil {
 			log.Fatal(err)
+		}
+		if c > 0 {
+
+		} else {
+			if err := HeadLine(f, n, output); err != nil {
+				log.Fatal(err)
+			}
 		}
 		if len(files) > 1 {
 			fmt.Fprint(output, "\n")
