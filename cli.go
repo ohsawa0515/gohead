@@ -32,14 +32,13 @@ func (cli *CLI) Run(args []string) int {
 	}
 
 	files := flags.Args()
-	result := 0
 	showFileName := false
 	for _, file := range files {
 		if len(files) > 1 {
 			showFileName = true
 		}
-		if result != cli.headFile(file, n, c, showFileName) {
-			return result
+		if status := cli.headFile(file, n, c, showFileName); status != ExitCodeOK {
+			return status
 		}
 	}
 
@@ -49,7 +48,8 @@ func (cli *CLI) Run(args []string) int {
 func (cli *CLI) headFile(file string, n, c uint64, showFileName bool) int {
 	f, err := os.OpenFile(file, os.O_RDONLY, 0)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return ExitCodeParseFlagError
 	}
 	defer f.Close()
 

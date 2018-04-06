@@ -6,6 +6,25 @@ import (
 	"testing"
 )
 
+func TestCliRunFileNotFound(t *testing.T) {
+	cases := []struct {
+		args string
+	}{
+		{args: "head ./test/foo.txt"},
+	}
+
+	for _, c := range cases {
+		outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
+		cli := &CLI{outStream: outStream, errStream: errStream}
+		args := strings.Split(c.args, " ")
+
+		status := cli.Run(args)
+		if status != ExitCodeParseFlagError {
+			t.Errorf("ExitStatus=%d, expected %d", status, ExitCodeOK)
+		}
+	}
+}
+
 func TestCliLines(t *testing.T) {
 	cases := []struct {
 		args     string
