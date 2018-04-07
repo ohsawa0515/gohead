@@ -124,3 +124,27 @@ a
 		}
 	}
 }
+
+func TestCliQuiet(t *testing.T) {
+	cases := []struct {
+		args     string
+		expected string
+	}{
+		{args: "head -n=1 -q ./test/hoge.txt ./test/fuga.txt", expected: "A\na\n"},
+	}
+
+	for _, c := range cases {
+		outStream, errStream := new(bytes.Buffer), new(bytes.Buffer)
+		cli := &CLI{outStream: outStream, errStream: errStream}
+		args := strings.Split(c.args, " ")
+
+		status := cli.Run(args)
+		if status != ExitCodeOK {
+			t.Errorf("ExitStatus=%d, expected %d", status, ExitCodeOK)
+		}
+
+		if outStream.String() != c.expected {
+			t.Errorf("not matched; actual %v, expected %v", outStream.String(), c.expected)
+		}
+	}
+}

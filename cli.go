@@ -22,11 +22,13 @@ type CLI struct {
 
 func (cli *CLI) Run(args []string) int {
 	var lines, chars uint64 // lines, bytes
+	var quiet bool
 
 	flags := flag.NewFlagSet("head", flag.ContinueOnError)
 	flags.SetOutput(cli.errStream)
 	flags.Uint64Var(&lines, "n", 10, "lines")
 	flags.Uint64Var(&chars, "c", 0, "bytes")
+	flags.BoolVar(&quiet, "q", false, "never print headers giving file names")
 	if err := flags.Parse(args[1:]); err != nil {
 		return ExitCodeParseFlagError
 	}
@@ -34,7 +36,7 @@ func (cli *CLI) Run(args []string) int {
 	files := flags.Args()
 	showFileName := false
 	for _, file := range files {
-		if len(files) > 1 {
+		if len(files) > 1 && !quiet {
 			showFileName = true
 		}
 		if status := cli.headFile(file, lines, chars, showFileName); status != ExitCodeOK {
