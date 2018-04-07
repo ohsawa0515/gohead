@@ -26,8 +26,8 @@ func (cli *CLI) Run(args []string) int {
 
 	flags := flag.NewFlagSet("head", flag.ContinueOnError)
 	flags.SetOutput(cli.errStream)
-	flags.Uint64Var(&lines, "n", 10, "lines")
-	flags.Uint64Var(&chars, "c", 0, "bytes")
+	flags.Uint64Var(&lines, "n", 10, "print the first K lines of each file")
+	flags.Uint64Var(&chars, "c", 0, "print the first K bytes of each file")
 	flags.BoolVar(&quiet, "q", false, "never print headers giving file names")
 	flags.BoolVar(&verbose, "v", false, "always print headers giving file names")
 	if err := flags.Parse(args[1:]); err != nil {
