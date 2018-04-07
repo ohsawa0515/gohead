@@ -21,12 +21,12 @@ type CLI struct {
 }
 
 func (cli *CLI) Run(args []string) int {
-	var n, c uint64 // lines, bytes
+	var lines, chars uint64 // lines, bytes
 
 	flags := flag.NewFlagSet("head", flag.ContinueOnError)
 	flags.SetOutput(cli.errStream)
-	flags.Uint64Var(&n, "n", 10, "lines")
-	flags.Uint64Var(&c, "c", 0, "bytes")
+	flags.Uint64Var(&lines, "n", 10, "lines")
+	flags.Uint64Var(&chars, "c", 0, "bytes")
 	if err := flags.Parse(args[1:]); err != nil {
 		return ExitCodeParseFlagError
 	}
@@ -37,7 +37,7 @@ func (cli *CLI) Run(args []string) int {
 		if len(files) > 1 {
 			showFileName = true
 		}
-		if status := cli.headFile(file, n, c, showFileName); status != ExitCodeOK {
+		if status := cli.headFile(file, lines, chars, showFileName); status != ExitCodeOK {
 			return status
 		}
 	}
@@ -45,7 +45,7 @@ func (cli *CLI) Run(args []string) int {
 	return ExitCodeOK
 }
 
-func (cli *CLI) headFile(file string, n, c uint64, showFileName bool) int {
+func (cli *CLI) headFile(file string, lines, chars uint64, showFileName bool) int {
 	f, err := os.OpenFile(file, os.O_RDONLY, 0)
 	if err != nil {
 		log.Println(err)
@@ -53,18 +53,25 @@ func (cli *CLI) headFile(file string, n, c uint64, showFileName bool) int {
 	}
 	defer f.Close()
 
+	head := &Head{
+		file:   f,
+		lines:  lines,
+		chars:  chars,
+		output: cli.outStream,
+	}
+
 	if showFileName {
 		fmt.Fprintf(cli.outStream, "==> %s <==\n", file)
 	}
-	// c オプションが指定された場合は N bytesまで表示する
-	// n オプションより優先する
-	if c > 0 {
-		if err := HeadCharacter(f, c, cli.outStream); err != nil {
+	// chars オプションが指定された場合は N bytesまで表示する
+	// lines オプションより優先する
+	if chars > 0 {
+		if err := head.ReadCharacter(); err != nil {
 			log.Println(err)
 			return ExitError
 		}
 	} else {
-		if err := HeadLine(f, n, cli.outStream); err != nil {
+		if err := head.ReadLines(); err != nil {
 			log.Println(err)
 			return ExitError
 		}

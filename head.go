@@ -7,11 +7,18 @@ import (
 	"io"
 )
 
-// HeadLine display first line of a file
-func HeadLine(file io.Reader, n uint64, w io.Writer) error {
+type Head struct {
+	file   io.Reader
+	output io.Writer
+	lines  uint64
+	chars  uint64
+}
+
+// ReadLines display first line of a file
+func (h *Head) ReadLines() error {
 	buf := new(bytes.Buffer)
-	reader := bufio.NewReader(file)
-	for i := uint64(0); i < n; i++ {
+	reader := bufio.NewReader(h.file)
+	for i := uint64(0); i < h.lines; i++ {
 		line, err := reader.ReadBytes('\n')
 		if err != nil && err != io.EOF {
 			return err
@@ -22,15 +29,15 @@ func HeadLine(file io.Reader, n uint64, w io.Writer) error {
 		buf.Write(line)
 	}
 
-	fmt.Fprint(w, buf)
+	fmt.Fprint(h.output, buf)
 	return nil
 }
 
-// HeadCharacter display first bytes of a file
-func HeadCharacter(file io.Reader, c uint64, w io.Writer) error {
+// ReadCharacter display first bytes of a file
+func (h *Head) ReadCharacter() error {
 	buf := new(bytes.Buffer)
-	reader := bufio.NewReader(file)
-	for i := uint64(0); i < c; i++ {
+	reader := bufio.NewReader(h.file)
+	for i := uint64(0); i < h.chars; i++ {
 		b, err := reader.ReadByte()
 		if err != nil && err != io.EOF {
 			return err
@@ -40,6 +47,6 @@ func HeadCharacter(file io.Reader, c uint64, w io.Writer) error {
 		buf.WriteByte(b)
 	}
 
-	fmt.Fprint(w, buf)
+	fmt.Fprint(h.output, buf)
 	return nil
 }
